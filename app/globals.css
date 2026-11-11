@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+/* Palet diambil dari suasana outlet Calf Tebet: langit berkabut, dinding greige, dedaunan sage. */
+@theme {
+  --color-cream: #f7f5f0;
+  --color-paper: #f3f1ec;
+  --color-ink: #2b3040;
+  --color-muted: #5c6275;
+  /* 4,57:1 di atas paper (latar kolom cari): lolos WCAG 1.4.3. Sebelumnya #8a8f9e = 2,86:1. */
+  --color-faint: #686d7d;
+  /* Batas kolom isian & sakelar mati: ≥3:1 di atas putih (WCAG 1.4.11). */
+  --color-field: #948d7f;
+  --color-line: #e7e2d9;
+  --color-line-strong: #ddd7cc;
+  --color-hair: #efebe3;
+  --color-accent: #3e54b8;
+  --color-accent-deep: #2f4296;
+  --color-tint: #eaeef5;
+  --color-mist: #e7ebf2;
+  --color-clay: #9c5a52;
+  --color-sage: #4c6247;
+  --color-sage-tint: #e8eee5;
+  --color-sand: #f3eadb;
+  --color-sand-ink: #7a5a2e;
+  --color-rose: #ebe0db;
+
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, serif;
+
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: default;
+  }
+  :focus-visible {
+    /* Warna aksen: 6,6:1 di atas putih. Sebelumnya #8fa0d8 = 2,56:1, sulit terlihat. */
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  input::placeholder {
+    color: var(--color-faint);
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-variant-numeric: lining-nums;
+  letter-spacing: -0.005em;
+}
+
+/* Bercak sapi samar di latar: motif dari nama "Calf", bukan pola generik.
+   Warnanya sangat dekat dengan cream supaya teks di atasnya tetap terbaca. */
+@utility bg-spots {
+  background-color: var(--color-cream);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' fill='%23efeae1'%3E%3Cpath d='M38 34c15-7 33 1 31 17s-22 20-34 13-12-24 3-30z'/%3E%3Cpath d='M168 96c11-5 25 3 23 15s-18 14-27 8-7-18 4-23z'/%3E%3Cpath d='M72 166c9-7 27-5 29 9s-16 20-27 14-11-16-2-23z'/%3E%3Cpath d='M205 200c6-2 11 2 10 7s-9 7-12 2 0-7 2-9z'/%3E%3Cpath d='M128 26c5-2 10 1 9 6s-7 6-10 3-2-7 1-9z'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Hormati pengaturan "kurangi gerakan" juga untuk animasi CSS. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}
