@@ -120,6 +120,9 @@ export function BaristaBoard() {
               <Icon.Sound />
               {sound ? "Bunyi aktif" : "Aktifkan bunyi"}
             </Press>
+            <Link href="/layar" target="_blank" className="flex h-11 items-center rounded-full border border-line-strong px-4 text-sm font-semibold text-accent">
+              Layar antrean ↗
+            </Link>
             <Press onClick={resetDemo} className="ml-2 h-11 rounded-full border border-line-strong px-4 text-sm font-semibold text-muted">
               Reset demo
             </Press>
@@ -261,7 +264,7 @@ function OrderCard({ order, now, action, actionClass, onMove }: CardProps) {
       <div className="flex items-center gap-2.5">
         <span className="font-display flex h-11 min-w-[72px] items-center justify-center rounded-xl bg-accent px-2.5 text-xl text-white">{order.queue}</span>
         <span className="min-w-0 text-sm leading-snug text-muted">
-          <b className="block truncate text-base text-ink">{order.name}</b>
+          <b className={`block truncate text-base ${order.name ? "text-ink" : "font-medium text-muted"}`}>{order.name || "Tanpa nama"}</b>
           <span className="whitespace-nowrap">
             Meja {order.table} · {mins === 0 ? "baru masuk" : `${mins} mnt lalu`}
           </span>

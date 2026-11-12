@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { MAX_QTY, actions, useCalf, useLocal, type CartLine, type Order } from "@/lib/store";
+import { MAX_QTY, actions, prepStats, useCalf, useLocal, type CartLine, type Order } from "@/lib/store";
 import { DICT, LangContext, type Lang } from "@/lib/i18n";
 import { screenVariants, DURATION, EASE_OUT, EASE_IN } from "@/lib/motion";
 import { Icon } from "@/components/ui";
@@ -253,6 +253,7 @@ export function CustomerApp({ table }: { table: string }) {
               <TrackScreen
                 order={tracked}
                 ahead={store.orders.filter((o) => o.status < 2 && o.createdAt < tracked.createdAt).length}
+                prep={prepStats(store.orders)}
                 onOrderAgain={startOver}
               />
             )}

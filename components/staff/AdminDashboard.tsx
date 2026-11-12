@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { MENU, TABLES, sizeLabel } from "@/lib/menu";
 import { rp } from "@/lib/format";
 import { EASE_OUT } from "@/lib/motion";
-import { actions, useCalf } from "@/lib/store";
+import { actions, easeStats, prepStats, useCalf } from "@/lib/store";
 import { Logo } from "@/components/ui";
 import { Switch } from "./Switch";
 
@@ -47,6 +47,24 @@ export function AdminDashboard() {
     { label: "Item terjual", value: String(cups) },
   ];
 
+  // Dua ukuran pilot: apakah pesanan cepat siap, dan apakah memesan dari meja terasa mudah.
+  const prep = prepStats(orders);
+  const ease = easeStats(orders);
+  const pilot = [
+    {
+      label: "Bayar sampai siap (median)",
+      value: prep ? `${prep.median} menit` : "–",
+      note: prep ? `Setengah pesanan siap dalam ${prep.lo}–${prep.hi} menit · ${prep.n} pesanan terakhir` : "Muncul setelah 3 pesanan ditandai siap",
+    },
+    {
+      label: "Kemudahan memesan",
+      value: ease ? `${ease.mean.toFixed(1)} / 7` : "–",
+      note: ease
+        ? `${ease.n} jawaban · Single Ease Question, 7 = sangat mudah`
+        : "Pelanggan menjawab satu pertanyaan setelah pesanan siap",
+    },
+  ];
+
   const missing = MENU.flatMap((s) => s.items).filter((i) => !i.sizes).length;
 
   return (
@@ -66,6 +84,11 @@ export function AdminDashboard() {
           <li>
             <Link href="/barista" className="flex min-h-11 items-center rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
               Papan barista ↗
+            </Link>
+          </li>
+          <li>
+            <Link href="/layar" className="flex min-h-11 items-center rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
+              Layar antrean ↗
             </Link>
           </li>
         </ul>
@@ -95,6 +118,15 @@ export function AdminDashboard() {
                 <motion.div key={k.value} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="font-display mt-1.5 text-3xl leading-tight">
                   {k.value}
                 </motion.div>
+              </div>
+            ))}
+          </div>
+          <div className="grid gap-3.5 sm:grid-cols-2">
+            {pilot.map((k) => (
+              <div key={k.label} className="rounded-[20px] border border-line bg-mist px-5 py-4">
+                <div className="text-[13px] font-semibold text-muted">{k.label}</div>
+                <div className="font-display mt-1.5 text-3xl leading-tight">{k.value}</div>
+                <div className="mt-1 text-[13px] leading-snug text-muted">{k.note}</div>
               </div>
             ))}
           </div>

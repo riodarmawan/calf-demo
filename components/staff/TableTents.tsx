@@ -60,9 +60,12 @@ export function TableTents() {
                 <div className="size-[164px] animate-pulse rounded-lg bg-paper" />
               )}
               <div className="font-display text-3xl leading-none">Meja {t}</div>
+              {/* Alamat tertulis: pelanggan bisa membandingkannya dengan yang terbuka di HP, jadi QR palsu yang ditempel mudah ketahuan. */}
+              {origin && <div className="break-all text-xs font-semibold text-muted">{origin.replace(/^https?:\/\//, "")}/meja/{t}</div>}
             </div>
             <p className="px-6 text-[15px] font-semibold">1. Scan · 2. Bayar QRIS · 3. Ambil</p>
-            <p className="-mt-2 px-6 text-[13px] text-muted">Ambil pesananmu di kasir saat namamu dipanggil.</p>
+            <p className="-mt-2 px-6 text-[13px] text-muted">Ambil pesananmu di kasir saat nomormu muncul di layar.</p>
+            <p className="-mt-2 px-6 text-xs text-muted">Pastikan alamat di HP sama dengan alamat di atas sebelum membayar.</p>
           </article>
         ))}
       </div>

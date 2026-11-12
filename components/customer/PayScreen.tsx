@@ -6,9 +6,12 @@ import QRCode from "qrcode";
 import { rp } from "@/lib/format";
 import { DURATION, EASE_OUT, TAP } from "@/lib/motion";
 import { Icon, IconButton, Press } from "@/components/ui";
+import { OUTLET } from "@/lib/menu";
 import { useT } from "@/lib/i18n";
 
 export const PAY_LIMIT_MS = 10 * 60_000;
+/** Nama penerima yang terdaftar di QRIS. Ditampilkan supaya pelanggan bisa mengenali QR palsu yang ditempel di meja. */
+const MERCHANT = `Calf Coffee & Milkbar ${OUTLET}`;
 const WALLETS = ["GoPay", "ShopeePay", "DANA", "OVO"];
 
 type Props = { total: number; deadline: number; onRenew: () => void; onBack: () => void; onPaid: () => void };
@@ -78,6 +81,10 @@ export function PayScreen({ total, deadline, onRenew, onBack, onPaid }: Props) {
         <div className="text-center">
           <div className="text-[13px] text-muted">{t.amountDue}</div>
           <div className="font-display text-[44px] leading-tight">{rp(total)}</div>
+          <div className="flex items-center justify-center gap-1.5 text-[13px] font-semibold text-ink">
+            <Icon.Store />
+            {t.payee(MERCHANT)}
+          </div>
           <div
             role="timer"
             aria-live="off"
@@ -90,6 +97,7 @@ export function PayScreen({ total, deadline, onRenew, onBack, onPaid }: Props) {
           </div>
         </div>
 
+        {/* Satu HP: membuka aplikasi e-wallet lebih ringan daripada menyimpan QR lalu mengunggahnya dari galeri. */}
         <h2 className="mt-1 text-sm font-semibold">{t.payFromPhone}</h2>
         <div className="grid grid-cols-2 gap-2">
           {WALLETS.map((w) => (
@@ -107,65 +115,75 @@ export function PayScreen({ total, deadline, onRenew, onBack, onPaid }: Props) {
           ))}
         </div>
 
-        <div className="flex items-center gap-2.5 text-xs text-muted">
-          <span className="h-px flex-1 bg-line" />
-          {t.orOtherApp}
-          <span className="h-px flex-1 bg-line" />
-        </div>
+        <p className="-mt-1 text-xs leading-relaxed text-muted">{t.walletHint}</p>
 
-        <div className="flex flex-col items-center gap-3 rounded-[20px] border border-line bg-white p-4">
-          <div className="relative size-[184px]">
-            <AnimatePresence mode="wait">
-              {qr ? (
-                <motion.img
-                  key={qr}
-                  src={qr}
-                  alt={t.qrAlt}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: expired ? 0.15 : 1, transition: { duration: DURATION.base } }}
-                  className="size-full rounded-lg"
-                />
-              ) : (
-                <motion.div key="skeleton" className="size-full animate-pulse rounded-lg bg-paper" />
+        {/* QR disembunyikan sampai dibutuhkan: QRIS dibuat untuk dipindai HP lain, bukan HP yang menampilkannya. */}
+        <details className="group rounded-[20px] border border-line bg-white">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold">{t.qrTitle}</span>
+              <span className="block text-xs text-muted">{t.qrSub}</span>
+            </span>
+            <span className="text-muted transition-transform duration-200 group-open:rotate-90">
+              <Icon.Chevron />
+            </span>
+          </summary>
+          <div className="flex flex-col items-center gap-3 border-t border-hair p-4">
+            <div className="relative size-[184px]">
+              <AnimatePresence mode="wait">
+                {qr ? (
+                  <motion.img
+                    key={qr}
+                    src={qr}
+                    alt={t.qrAlt}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: expired ? 0.15 : 1, transition: { duration: DURATION.base } }}
+                    className="size-full rounded-lg"
+                  />
+                ) : (
+                  <motion.div key="skeleton" className="size-full animate-pulse rounded-lg bg-paper" />
+                )}
+              </AnimatePresence>
+              {expired && (
+                <motion.button
+                  type="button"
+                  whileTap={TAP}
+                  onClick={renew}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute inset-0 m-auto h-11 w-36 rounded-xl bg-ink text-sm font-semibold text-white"
+                >
+                  {t.newQr}
+                </motion.button>
               )}
-            </AnimatePresence>
-            {expired && (
-              <motion.button
-                type="button"
-                whileTap={TAP}
-                onClick={renew}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="absolute inset-0 m-auto h-11 w-36 rounded-xl bg-ink text-sm font-semibold text-white"
-              >
-                {t.newQr}
-              </motion.button>
-            )}
+            </div>
+            <div className="text-center text-xs text-muted">
+              {MERCHANT}
+              <br />
+              {t.demoQr}
+            </div>
+            <p className="self-stretch text-[13px] leading-relaxed text-muted">{t.scanOther}</p>
+            <h3 className="self-stretch text-[13px] font-semibold text-ink">{t.oneDevice}</h3>
+            <a
+              href={qr ?? undefined}
+              download="calf-qris.png"
+              aria-disabled={!qr || expired}
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-[14px] border border-accent text-sm font-semibold text-accent transition-transform active:scale-[0.97]"
+            >
+              <Icon.Download />
+              {t.saveQr}
+            </a>
+            <ol className="list-decimal self-stretch pl-[18px] text-[13px] leading-relaxed text-muted">
+              <li>{t.payStep1}</li>
+              <li>
+                {t.payStep2a}
+                <b className="text-ink">{t.payStep2b}</b>
+                {t.payStep2c}
+              </li>
+              <li>{t.payStep3}</li>
+            </ol>
           </div>
-          <div className="text-center text-xs text-muted">
-            Calf Coffee &amp; Milkbar · Jatiwarna
-            <br />
-            {t.demoQr}
-          </div>
-          <a
-            href={qr ?? undefined}
-            download="calf-qris.png"
-            aria-disabled={!qr || expired}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-[14px] border border-accent text-sm font-semibold text-accent transition-transform active:scale-[0.97]"
-          >
-            <Icon.Download />
-            {t.saveQr}
-          </a>
-          <ol className="list-decimal self-stretch pl-[18px] text-[13px] leading-relaxed text-muted">
-            <li>{t.payStep1}</li>
-            <li>
-              {t.payStep2a}
-              <b className="text-ink">{t.payStep2b}</b>
-              {t.payStep2c}
-            </li>
-            <li>{t.payStep3}</li>
-          </ol>
-        </div>
+        </details>
       </div>
 
       <div className="flex flex-none flex-col gap-2.5 border-t border-line bg-white px-4 pb-5 pt-3">
@@ -173,13 +191,19 @@ export function PayScreen({ total, deadline, onRenew, onBack, onPaid }: Props) {
           {!expired && <span className="animate-pulse-soft size-2 rounded-full bg-[#c9a35b]" />}
           {expired ? t.qrExpired : t.waitingPayment}
         </div>
-        <Press
-          onClick={pay}
-          disabled={expired}
-          className="h-11 rounded-[14px] border border-dashed border-[#bdb7ab] text-[13px] font-semibold text-muted disabled:opacity-50"
-        >
-          {t.demoPay}
-        </Press>
+        {/* Saat waktu habis, jalan keluarnya harus terlihat tanpa membuka bagian QR yang terlipat. */}
+        {expired ? (
+          <Press onClick={renew} className="h-12 rounded-[14px] bg-accent text-sm font-semibold text-white">
+            {t.newQr}
+          </Press>
+        ) : (
+          <Press
+            onClick={pay}
+            className="h-11 rounded-[14px] border border-dashed border-[#bdb7ab] text-[13px] font-semibold text-muted"
+          >
+            {t.demoPay}
+          </Press>
+        )}
       </div>
 
       <AnimatePresence>

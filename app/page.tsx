@@ -22,6 +22,12 @@ const LINKS = [
     tag: "Desktop",
   },
   {
+    href: "/layar",
+    title: "Layar antrean",
+    desc: "Nomor antrean yang sedang disiapkan dan siap diambil, untuk TV di dekat kasir. Tanpa nama pelanggan.",
+    tag: "TV di kasir",
+  },
+  {
     href: "/qr",
     title: "QR meja",
     desc: "Table tent siap cetak dengan QR unik untuk setiap meja.",

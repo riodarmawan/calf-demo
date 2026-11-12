@@ -153,7 +153,12 @@ export function MenuScreen({ table, cart, soldOut, activeOrders, onOpenOrder, on
             </AnimatePresence>
           </label>
         </div>
-        <nav ref={chips} aria-label={t.jumpToCategory} className="no-scrollbar flex gap-2 overflow-x-auto px-4 pb-3">
+        {/* Tepi kanan memudar: tanda ada kategori lain di luar layar yang bisa digeser. */}
+        <nav
+          ref={chips}
+          aria-label={t.jumpToCategory}
+          className="no-scrollbar flex gap-2 overflow-x-auto pb-3 pl-4 pr-10 [mask-image:linear-gradient(to_right,#000_calc(100%-40px),transparent)]"
+        >
           {[ALL, ...SECTIONS.map((s) => s.key)].map((key) => {
             const label = key === ALL ? t.all : lang === "en" ? SECTIONS.find((s) => s.key === key)!.en.key : key;
             const on = cat === key && !query;

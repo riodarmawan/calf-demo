@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { rp } from "@/lib/format";
 import { DURATION, EASE_OUT } from "@/lib/motion";
 import { MAX_QTY, type CartLine } from "@/lib/store";
@@ -24,27 +24,16 @@ type Props = {
 };
 
 export function CartScreen({ table, cart, name, onName, onQty, onBack, onAddMore, onPay }: Props) {
-  const [tried, setTried] = useState(false);
   const { t, lang } = useT();
   // Nama yang tersimpan dari kunjungan sebelumnya: tawarkan "Bukan Anda?" untuk HP yang dipakai bergantian.
   const [savedName] = useState(name);
   const input = useRef<HTMLInputElement>(null);
-  const shake = useAnimationControls();
   const hintId = useId();
   const count = cart.reduce((a, l) => a + l.qty, 0);
   const total = cart.reduce((a, l) => a + l.qty * l.unit, 0);
-  const err = tried && !name.trim();
-
-  const submit = () => {
-    if (!name.trim()) {
-      setTried(true);
-      input.current?.focus();
-      // Getaran kecil pada kolom yang salah: tanda kesalahan yang langsung menunjuk sumbernya.
-      shake.start({ x: [0, -6, 6, -4, 4, 0], transition: { duration: 0.32 } });
-      return;
-    }
-    onPay();
-  };
+  // Nama tidak wajib: nomor antrean sudah cukup untuk mengambil pesanan, dan tidak semua orang
+  // nyaman namanya dipanggil keras atau tampil di layar barista.
+  const submit = onPay;
 
   const header = (
     <header className="flex flex-none items-center gap-3 border-b border-line bg-white px-4 py-3">
@@ -119,15 +108,10 @@ export function CartScreen({ table, cart, name, onName, onQty, onBack, onAddMore
           </Press>
         </section>
 
-        <motion.div
-          animate={shake}
-          className={`flex flex-col gap-2 rounded-[18px] bg-white px-4 py-3.5 transition-colors duration-200 ${
-            err ? "border-[1.5px] border-clay" : "border border-line"
-          }`}
-        >
+        <div className="flex flex-col gap-2 rounded-[18px] border border-line bg-white px-4 py-3.5">
           <div className="flex items-baseline justify-between gap-2">
             <label htmlFor="nama" className="text-sm font-semibold">
-              {t.nameLabel}
+              {t.nameLabel} <span className="font-normal text-muted">({t.optional})</span>
             </label>
             {savedName && name === savedName && (
               <button
@@ -153,16 +137,13 @@ export function CartScreen({ table, cart, name, onName, onQty, onBack, onAddMore
             onChange={(e) => onName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && submit()}
             placeholder={t.namePlaceholder}
-            aria-invalid={err}
             aria-describedby={hintId}
-            className={`h-[50px] w-full rounded-xl bg-white px-3.5 text-base outline-none transition-colors focus:border-accent ${
-              err ? "border-[1.5px] border-clay" : "border border-field"
-            }`}
+            className="h-[50px] w-full rounded-xl border border-field bg-white px-3.5 text-base outline-none transition-colors focus:border-accent"
           />
-          <p id={hintId} role={err ? "alert" : undefined} className={`text-xs leading-snug ${err ? "font-semibold text-clay" : "text-muted"}`}>
-            {err ? t.nameError : t.nameHint}
+          <p id={hintId} className="text-xs leading-snug text-muted">
+            {t.nameHint}
           </p>
-        </motion.div>
+        </div>
 
         <div className="flex items-start gap-3 rounded-[18px] border border-line bg-white px-4 py-3.5">
           <span className="mt-0.5 text-accent">

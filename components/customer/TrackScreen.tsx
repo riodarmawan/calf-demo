@@ -1,32 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { OUTLET, describe } from "@/lib/menu";
 import { clock, rp } from "@/lib/format";
 import { DURATION, EASE_IN, EASE_OUT } from "@/lib/motion";
-import { actions, type Order, type OrderStatus } from "@/lib/store";
+import { actions, type Order, type OrderStatus, type prepStats } from "@/lib/store";
+import { useNow } from "@/lib/clock";
 import { Icon, Logo, Press } from "@/components/ui";
 import { useT } from "@/lib/i18n";
 
 type Perm = "default" | "granted" | "denied" | "unsupported";
+type Props = { order: Order; ahead: number; prep: ReturnType<typeof prepStats>; onOrderAgain: () => void };
+const SEQ = [1, 2, 3, 4, 5, 6, 7];
 
-// ponytail: rata-rata kasar per pesanan; ganti dengan median waktu racik nyata dari data barista
-const MIN_PER_ORDER = 3;
-
-export function TrackScreen({ order, ahead, onOrderAgain }: { order: Order; ahead: number; onOrderAgain: () => void }) {
+export function TrackScreen({ order, ahead, prep, onOrderAgain }: Props) {
   const { t, lang } = useT();
   const STEPS = t.steps;
   const ready = order.status === 2;
   const step = STEPS[order.status];
-  // Perkiraan dari antrean nyata, bukan angka tetap. `ahead` = pesanan aktif yang masuk lebih dulu.
-  const estimate = (n: number) => `${t.queueAhead(n)}. ${t.estimate((n + 1) * MIN_PER_ORDER)}`;
-  const desc = ready
-    ? t.readyDesc(order.queue)
-    : order.status === 1
-      ? estimate(ahead)
-      : `${step.desc} ${estimate(ahead)}`;
+  const now = useNow(30_000);
+  const mins = now ? Math.max(0, Math.floor((now - order.createdAt) / 60_000)) : 0;
+  const seqId = useId();
+  // Rentang dari waktu siap pesanan sungguhan. Belum cukup data = tidak ada angka, bukan angka karangan.
+  const range = prep && (prep.lo === prep.hi ? `${prep.lo}` : `${prep.lo}–${prep.hi}`);
+  const waiting = `${t.queueAhead(ahead)}. ${range ? `${t.estimate(range, prep.n)} ` : ""}${t.waitAtTable}`;
+  const desc = ready ? t.readyDesc(order.queue) : order.status === 1 ? waiting : order.status === 0 ? `${step.desc} ${waiting}` : step.desc;
   const [perm, setPerm] = useState<Perm>("default");
   const prev = useRef<OrderStatus>(order.status);
 
@@ -84,10 +84,12 @@ export function TrackScreen({ order, ahead, onOrderAgain }: { order: Order; ahea
               <div className={`text-xs font-semibold uppercase tracking-[0.08em] ${ready ? "text-[#dce8d8]" : "text-muted"}`}>{t.queueNumber}</div>
               <div className="font-display text-[56px] leading-none">{order.queue}</div>
             </div>
-            <div className="text-right">
-              <div className={`text-xs font-semibold uppercase tracking-[0.08em] ${ready ? "text-[#dce8d8]" : "text-muted"}`}>{t.nameFor}</div>
-              <div className="mt-1 text-lg font-semibold">{order.name}</div>
-            </div>
+            {order.name && (
+              <div className="text-right">
+                <div className={`text-xs font-semibold uppercase tracking-[0.08em] ${ready ? "text-[#dce8d8]" : "text-muted"}`}>{t.nameFor}</div>
+                <div className="mt-1 text-lg font-semibold">{order.name}</div>
+              </div>
+            )}
           </div>
           <div className={`my-3.5 h-px ${ready ? "bg-white/25" : "bg-hair"}`} />
           <AnimatePresence mode="wait" initial={false}>
@@ -99,6 +101,7 @@ export function TrackScreen({ order, ahead, onOrderAgain }: { order: Order; ahea
             >
               <h1 className="font-display text-[30px] leading-[1.05]">{step.title}</h1>
               <p className={`mt-1.5 text-sm leading-relaxed ${ready ? "text-[#eef3ec]" : "text-muted"}`}>{desc}</p>
+              {order.status < 2 && <p className="mt-1 text-xs font-semibold tabular-nums text-muted">{t.elapsed(mins)}</p>}
             </motion.div>
           </AnimatePresence>
 
@@ -156,6 +159,39 @@ export function TrackScreen({ order, ahead, onOrderAgain }: { order: Order; ahea
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Satu pertanyaan, opsional, setelah pesanan siap: bahan ukur pilot tanpa mengganggu saat memesan. */}
+        {order.status >= 2 && (
+          <section aria-labelledby={seqId} className="rounded-[18px] border border-line bg-white px-4 py-3.5">
+            <h2 id={seqId} className="text-sm font-semibold leading-snug">
+              {t.seqQuestion}
+            </h2>
+            <div aria-live="polite">
+              {order.rating ? (
+                <p className="mt-2 text-[13px] font-semibold text-sage">{t.seqThanks}</p>
+              ) : (
+                <>
+                  <div role="group" aria-labelledby={seqId} className="mt-3 flex gap-1">
+                    {SEQ.map((n) => (
+                      <Press
+                        key={n}
+                        aria-label={`${t.seqValue(n)}${n === 1 ? `, ${t.seqLow}` : n === 7 ? `, ${t.seqHigh}` : ""}`}
+                        onClick={() => actions.rate(order.id, n)}
+                        className="h-11 min-w-0 flex-1 rounded-xl border border-line-strong text-sm font-semibold text-ink"
+                      >
+                        {n}
+                      </Press>
+                    ))}
+                  </div>
+                  <div aria-hidden className="mt-1.5 flex justify-between text-xs text-muted">
+                    <span>{t.seqLow}</span>
+                    <span>{t.seqHigh}</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+        )}
 
         <section className="rounded-[18px] border border-line bg-white px-4 pb-3 pt-1.5">
           <div className="flex items-center justify-between pb-1.5 pt-2.5">
