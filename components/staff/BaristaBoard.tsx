@@ -123,7 +123,7 @@ export function BaristaBoard() {
             <Link href="/layar" target="_blank" className="flex h-11 items-center rounded-full border border-line-strong px-4 text-sm font-semibold text-accent">
               Layar antrean ↗
             </Link>
-            <Press onClick={resetDemo} className="ml-2 h-11 rounded-full border border-line-strong px-4 text-sm font-semibold text-muted">
+            <Press onClick={resetDemo} className="h-11 rounded-full border border-line-strong px-4 text-sm font-semibold text-muted">
               Reset demo
             </Press>
           </div>
@@ -144,11 +144,11 @@ export function BaristaBoard() {
         )}
       </header>
 
-      <main className="mx-auto flex max-w-[1400px] flex-col gap-5 px-6 pb-10 pt-5">
+      <main className="mx-auto flex max-w-[1400px] flex-col gap-5 overflow-x-clip px-6 pb-10 pt-5">
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {stats.map((s) => (
-            <div key={s.label} className="flex items-baseline gap-3 rounded-[18px] border border-line bg-white px-5 py-4">
-              <motion.span key={s.value} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className={`font-display text-4xl leading-none ${s.tone}`}>
+            <div key={s.label} className="flex flex-col gap-1 rounded-[18px] border border-line bg-white px-4 py-3 sm:flex-row sm:items-baseline sm:gap-3 sm:px-5 sm:py-4">
+              <motion.span key={s.value} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} className={`font-display text-3xl leading-none sm:text-4xl ${s.tone}`}>
                 {s.value}
               </motion.span>
               <span className="text-sm font-semibold leading-tight text-muted">{s.label}</span>
@@ -158,11 +158,12 @@ export function BaristaBoard() {
 
         <div className="flex flex-wrap items-start gap-5">
           <LayoutGroup>
-            <div className="grid min-w-0 flex-[999_1_720px] grid-cols-1 items-start gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+            {/* Di HP, empat kolom berjajar dan digeser ke samping: tidak perlu menggulir melewati semua kartu "Baru" untuk mencapai "Siap diambil". */}
+            <div className="-mx-6 flex min-w-0 flex-[999_1_720px] snap-x snap-mandatory scroll-px-6 items-start gap-3.5 overflow-x-auto px-6 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-4">
               {COLUMNS.map((col, ci) => {
                 const list = byStatus(ci as OrderStatus);
                 return (
-                  <section key={col.title} aria-label={col.title} className="flex min-h-32 flex-col gap-2.5 rounded-[20px] bg-[#efebe3] p-3">
+                  <section key={col.title} aria-label={col.title} className="flex min-h-32 w-[85%] shrink-0 snap-start flex-col gap-2.5 rounded-[20px] bg-[#efebe3] p-3 sm:w-auto">
                     <div className="flex items-center justify-between px-1.5 py-1">
                       <h2 className="text-[15px] font-bold">{col.title}</h2>
                       <motion.span

@@ -68,38 +68,39 @@ export function AdminDashboard() {
   const missing = MENU.flatMap((s) => s.items).filter((i) => !i.sizes).length;
 
   return (
-    <div className="flex min-h-dvh flex-wrap bg-cream">
-      <nav className="flex flex-[1_1_230px] flex-col gap-5 bg-[#ebe8e1] px-5 py-6 lg:sticky lg:top-0 lg:h-dvh lg:max-w-[260px]">
-        <Link href="/" aria-label="Beranda prototipe">
-          <Logo lockup className="h-auto w-32" />
+    <div className="flex min-h-dvh flex-col bg-cream lg:flex-row">
+      <nav className="flex flex-col gap-3 bg-[#ebe8e1] px-5 py-4 lg:sticky lg:top-0 lg:h-dvh lg:w-[260px] lg:shrink-0 lg:gap-5 lg:py-6">
+        <Link href="/" aria-label="Beranda prototipe" className="self-start">
+          <Logo lockup className="h-auto w-24 lg:w-32" />
         </Link>
-        <ul className="flex flex-wrap gap-1.5 lg:flex-col">
+        {/* Di HP: satu baris yang bisa digeser, bukan lima tautan bertumpuk yang mendorong isi ke bawah. */}
+        <ul className="no-scrollbar -mx-5 flex gap-1.5 overflow-x-auto px-5 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0">
           {NAV.map((n) => (
             <li key={n.href}>
-              <a href={n.href} className="flex min-h-11 items-center rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
+              <a href={n.href} className="flex min-h-11 items-center whitespace-nowrap rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
                 {n.label}
               </a>
             </li>
           ))}
           <li>
-            <Link href="/barista" className="flex min-h-11 items-center rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
+            <Link href="/barista" className="flex min-h-11 items-center whitespace-nowrap rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
               Papan barista ↗
             </Link>
           </li>
           <li>
-            <Link href="/layar" className="flex min-h-11 items-center rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
+            <Link href="/layar" className="flex min-h-11 items-center whitespace-nowrap rounded-xl px-3.5 text-sm font-semibold text-muted transition-colors hover:bg-white hover:text-accent">
               Layar antrean ↗
             </Link>
           </li>
         </ul>
-        <p className="mt-auto text-xs leading-relaxed text-muted">
+        <p className="mt-auto hidden text-xs leading-relaxed text-muted lg:block">
           Outlet Jatiwarna
           <br />
           Peran: Owner
         </p>
       </nav>
 
-      <main className="flex min-w-0 flex-[999_1_640px] flex-col gap-6 px-5 py-7 sm:px-8">
+      <main className="flex min-w-0 flex-1 flex-col gap-6 px-4 py-6 sm:px-8 sm:py-7">
         <section id="ringkasan" className="flex scroll-mt-6 flex-col gap-4">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -113,9 +114,9 @@ export function AdminDashboard() {
           </div>
           <div className="grid grid-cols-2 gap-3.5 xl:grid-cols-4">
             {kpis.map((k) => (
-              <div key={k.label} className="rounded-[20px] border border-line bg-white px-5 py-4">
+              <div key={k.label} className="min-w-0 rounded-[20px] border border-line bg-white px-4 py-3.5 sm:px-5 sm:py-4">
                 <div className="text-[13px] font-semibold text-muted">{k.label}</div>
-                <motion.div key={k.value} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="font-display mt-1.5 text-3xl leading-tight">
+                <motion.div key={k.value} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="font-display mt-1.5 whitespace-nowrap text-2xl leading-tight sm:text-3xl">
                   {k.value}
                 </motion.div>
               </div>
@@ -123,7 +124,7 @@ export function AdminDashboard() {
           </div>
           <div className="grid gap-3.5 sm:grid-cols-2">
             {pilot.map((k) => (
-              <div key={k.label} className="rounded-[20px] border border-line bg-mist px-5 py-4">
+              <div key={k.label} className="rounded-[20px] border border-line bg-mist px-4 py-3.5 sm:px-5 sm:py-4">
                 <div className="text-[13px] font-semibold text-muted">{k.label}</div>
                 <div className="font-display mt-1.5 text-3xl leading-tight">{k.value}</div>
                 <div className="mt-1 text-[13px] leading-snug text-muted">{k.note}</div>
@@ -131,7 +132,7 @@ export function AdminDashboard() {
             ))}
           </div>
           <div className="flex flex-wrap gap-4">
-            <div className="min-w-0 flex-[2_1_460px] rounded-[20px] border border-line bg-white p-5">
+            <div className="min-w-0 flex-[2_1_460px] rounded-[20px] border border-line bg-white p-4 sm:p-5">
               <h2 className="font-display text-2xl leading-none">Penjualan per jam</h2>
               <p className="mt-1.5 text-[13px] text-muted">Angka di atas batang dalam ribu rupiah.</p>
               <div
@@ -163,7 +164,7 @@ export function AdminDashboard() {
                 ))}
               </div>
             </div>
-            <div className="min-w-0 flex-[1_1_280px] rounded-[20px] border border-line bg-white p-5">
+            <div className="min-w-0 flex-[1_1_280px] rounded-[20px] border border-line bg-white p-4 sm:p-5">
               <h2 className="font-display text-2xl leading-none">Menu terlaris</h2>
               <div className="mt-4 flex flex-col gap-3.5">
                 {best.length === 0 && <p className="text-sm text-muted">Belum ada pesanan.</p>}
@@ -189,7 +190,7 @@ export function AdminDashboard() {
           </div>
         </section>
 
-        <section id="menu" className="scroll-mt-6 rounded-[24px] border border-line bg-white p-5">
+        <section id="menu" className="scroll-mt-6 rounded-[24px] border border-line bg-white p-4 sm:p-5">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="font-display text-3xl leading-none">Menu &amp; harga</h2>
             <span className="text-[13px] text-muted">
@@ -203,11 +204,11 @@ export function AdminDashboard() {
                   {sec.title} · {sec.items.length}
                 </h3>
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[560px] border-collapse text-sm">
+                  <table className="w-full border-collapse text-sm sm:min-w-[560px]">
                     <thead>
                       <tr className="text-left text-xs uppercase tracking-[0.08em] text-muted">
                         <th className="border-b-2 border-line px-3 py-2 font-semibold">Menu</th>
-                        <th className="border-b-2 border-line px-3 py-2 font-semibold">Ukuran &amp; harga</th>
+                        <th className="hidden border-b-2 border-line px-3 py-2 font-semibold sm:table-cell">Ukuran &amp; harga</th>
                         <th className="border-b-2 border-line px-3 py-2 font-semibold">Tersedia</th>
                       </tr>
                     </thead>
@@ -216,8 +217,14 @@ export function AdminDashboard() {
                         const out = soldOut.includes(it.id);
                         return (
                           <tr key={it.id} className="border-b border-hair">
-                            <td className="px-3 py-2.5 font-semibold">{it.name}</td>
-                            <td className="px-3 py-2.5 text-muted">
+                            <td className="px-3 py-2.5 font-semibold">
+                              {it.name}
+                              {/* Di HP harga ditulis di bawah nama, supaya tabel tidak perlu digeser. */}
+                              <span className="mt-0.5 block text-[13px] font-normal text-muted sm:hidden">
+                                {it.sizes ? it.sizes.map(([k, p]) => `${sizeLabel(k)} ${rp(p)}`).join(" · ") : "Perlu harga, disembunyikan dari pelanggan"}
+                              </span>
+                            </td>
+                            <td className="hidden px-3 py-2.5 text-muted sm:table-cell">
                               {it.sizes ? (
                                 it.sizes.map(([k, p]) => `${sizeLabel(k)} ${rp(p)}`).join(" · ")
                               ) : (
@@ -238,7 +245,7 @@ export function AdminDashboard() {
           </div>
         </section>
 
-        <section id="meja" className="scroll-mt-6 rounded-[24px] border border-line bg-white p-5">
+        <section id="meja" className="scroll-mt-6 rounded-[24px] border border-line bg-white p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="font-display text-3xl leading-none">Meja &amp; QR code</h2>

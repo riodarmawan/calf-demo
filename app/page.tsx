@@ -38,7 +38,7 @@ const LINKS = [
 export default function Home() {
   return (
     <main className="min-h-dvh bg-gradient-to-b from-[#dce3ee] via-[#eeeae3] to-cream">
-      <div className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-14 sm:py-20">
+      <div className="mx-auto flex max-w-5xl flex-col gap-10 px-5 py-10 sm:gap-12 sm:px-6 sm:py-20">
         <header className="flex flex-col gap-6">
           <div className="flex items-end gap-3">
             <Image src="/images/logo-lockup-blue.png" alt="Calf Coffee & Milkbar" width={816} height={507} className="h-auto w-40" priority />
@@ -49,7 +49,7 @@ export default function Home() {
             Pesan dari meja. <em className="text-clay">Tanpa antre.</em>
           </h1>
           <p className="max-w-2xl text-lg leading-relaxed text-muted">
-            Pelanggan scan QR di meja, memilih menu, membayar dengan QRIS, lalu mengambil pesanan di kasir saat nama dan nomor antreannya dipanggil.
+            Pelanggan scan QR di meja, memilih menu, membayar dengan QRIS, lalu mengambil pesanan di kasir saat nomor antreannya muncul di layar.
           </p>
         </header>
 
@@ -58,7 +58,7 @@ export default function Home() {
             <li key={l.href}>
               <Link
                 href={l.href}
-                className="group flex h-full flex-col gap-3 rounded-3xl border border-line bg-white/80 p-6 shadow-[0_1px_2px_rgba(43,48,64,0.04),0_8px_24px_rgba(43,48,64,0.05)] backdrop-blur transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(43,48,64,0.05),0_16px_40px_rgba(43,48,64,0.1)] active:translate-y-0 active:scale-[0.99]"
+                className="group flex h-full flex-col gap-3 rounded-3xl border border-line bg-white/80 p-5 sm:p-6 shadow-[0_1px_2px_rgba(43,48,64,0.04),0_8px_24px_rgba(43,48,64,0.05)] backdrop-blur transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(43,48,64,0.05),0_16px_40px_rgba(43,48,64,0.1)] active:translate-y-0 active:scale-[0.99]"
               >
                 <span className="self-start rounded-full bg-tint px-2.5 py-1 text-xs font-semibold text-accent">{l.tag}</span>
                 <span className="font-display text-3xl leading-none">{l.title}</span>
@@ -71,7 +71,7 @@ export default function Home() {
           ))}
         </ul>
 
-        <section className="rounded-3xl bg-mist p-6 text-[15px] leading-relaxed text-[#3a4560]">
+        <section className="rounded-3xl bg-mist p-5 text-[15px] sm:p-6 leading-relaxed text-[#3a4560]">
           <h2 className="font-display text-2xl text-ink">Cara mencoba alurnya</h2>
           <ol className="mt-3 list-decimal space-y-1.5 pl-5">
             <li>Buka halaman Pelanggan dan Barista di dua tab atau dua jendela berdampingan.</li>

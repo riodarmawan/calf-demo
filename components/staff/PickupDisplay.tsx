@@ -19,26 +19,26 @@ export function PickupDisplay() {
   const making = orders.filter((o) => o.status < 2).sort((a, b) => a.createdAt - b.createdAt);
 
   return (
-    <main className="bg-spots flex min-h-dvh flex-col gap-6 p-6 lg:p-10">
-      <header className="flex items-center justify-between gap-4">
+    <main className="bg-spots flex min-h-dvh flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:p-10">
+      <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <Link href="/" aria-label="Beranda prototipe" className="flex items-end gap-3">
-          <Logo lockup className="h-14 w-auto" />
-          <CalfMascot className="mb-1 h-12 w-auto text-accent" />
+          <Logo lockup className="h-10 w-auto sm:h-14" />
+          <CalfMascot className="mb-1 h-9 w-auto text-accent sm:h-12" />
         </Link>
-        <h1 className="font-display text-right text-3xl leading-none lg:text-5xl">
+        <h1 className="font-display text-2xl leading-none sm:text-right sm:text-3xl lg:text-5xl">
           Antrean pesanan
-          <span className="mt-1 block text-base font-semibold font-sans text-muted lg:text-xl">
+          <span className="mt-1 block text-sm font-semibold font-sans text-muted sm:text-base lg:text-xl">
             Calf {OUTLET} · Order queue
           </span>
         </h1>
       </header>
 
-      <div className="grid flex-1 gap-6 lg:grid-cols-[2fr_3fr]">
+      <div className="grid flex-1 gap-4 sm:gap-6 lg:grid-cols-[2fr_3fr]">
         <Column title="Sedang disiapkan" sub="Preparing" list={making} tone="making" empty="Belum ada pesanan · No orders yet" />
         <Column title="Siap diambil" sub="Ready for pickup" list={ready} tone="ready" empty="Belum ada yang siap · Nothing ready yet" />
       </div>
 
-      <footer className="rounded-[20px] bg-ink px-6 py-4 text-center text-lg font-semibold text-white lg:text-2xl">
+      <footer className="rounded-[20px] bg-ink px-4 py-3 text-center text-[15px] font-semibold text-white sm:px-6 sm:py-4 sm:text-lg lg:text-2xl">
         Tidak perlu antre: scan QR di meja Anda. <span className="text-[#b9c6f2]">No need to queue: scan the QR at your table.</span>
       </footer>
     </main>
@@ -52,16 +52,16 @@ function Column({ title, sub, list, tone, empty }: ColumnProps) {
   return (
     <section
       aria-label={title}
-      className={`flex flex-col gap-4 rounded-[28px] p-6 ${ready ? "bg-sage text-white" : "border border-line bg-white text-ink"}`}
+      className={`flex flex-col gap-3 rounded-[24px] p-4 sm:gap-4 sm:rounded-[28px] sm:p-6 ${ready ? "bg-sage text-white" : "border border-line bg-white text-ink"}`}
     >
-      <h2 className="font-display text-3xl leading-none lg:text-4xl">
+      <h2 className="font-display text-2xl leading-none sm:text-3xl lg:text-4xl">
         {title}
-        <span className={`ml-3 align-middle text-base font-semibold font-sans lg:text-lg ${ready ? "text-[#dce8d8]" : "text-muted"}`}>
+        <span className={`ml-2 align-middle text-sm font-semibold font-sans sm:ml-3 sm:text-base lg:text-lg ${ready ? "text-[#dce8d8]" : "text-muted"}`}>
           {sub}
         </span>
       </h2>
       {/* Pembaca layar mengumumkan nomor yang baru siap; kolom "disiapkan" tidak perlu dibacakan. */}
-      <ul aria-live={ready ? "polite" : undefined} className={`grid content-start gap-3 ${ready ? "grid-cols-2 xl:grid-cols-3" : "grid-cols-3 xl:grid-cols-4"}`}>
+      <ul aria-live={ready ? "polite" : undefined} className={`grid content-start gap-2 sm:gap-3 ${ready ? "grid-cols-2 xl:grid-cols-3" : "grid-cols-3 xl:grid-cols-4"}`}>
         <AnimatePresence initial={false}>
           {list.map((o) => (
             <motion.li
@@ -72,7 +72,7 @@ function Column({ title, sub, list, tone, empty }: ColumnProps) {
               exit={{ opacity: 0, scale: 0.9 }}
               transition={SPRING_SOFT}
               className={`font-display flex items-center justify-center rounded-2xl leading-none lining-nums tabular-nums ${
-                ready ? "bg-white py-5 text-5xl text-sage lg:text-7xl" : "bg-paper py-3 text-3xl text-muted lg:text-4xl"
+                ready ? "bg-white py-4 text-4xl text-sage sm:py-5 sm:text-5xl lg:text-7xl" : "bg-paper py-2.5 text-2xl text-muted sm:py-3 sm:text-3xl lg:text-4xl"
               }`}
             >
               {o.queue}

@@ -206,7 +206,8 @@ export function MenuScreen({ table, cart, soldOut, activeOrders, onOpenOrder, on
             {!query && (
               <>
                 <div className="mx-4 mt-3.5 flex items-center gap-3 rounded-2xl border border-line bg-white px-3.5 py-3">
-                  <ol className="flex shrink-0 gap-1.5" aria-label={t.howToOrder}>
+                  {/* Di HP sangat kecil angka 1-2-3 disembunyikan; kalimat di sebelahnya sudah menjelaskan langkahnya. */}
+                  <ol className="flex shrink-0 gap-1.5 max-[359px]:hidden" aria-label={t.howToOrder}>
                     {[1, 2, 3].map((n) => (
                       <li key={n} className="flex size-6.5 items-center justify-center rounded-full bg-tint text-xs font-bold text-accent">
                         {n}
