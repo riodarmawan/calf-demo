@@ -63,7 +63,7 @@ export function CartScreen({ table, cart, name, onName, onQty, onBack, onAddMore
     <>
       {header}
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3.5 *:flex-none">
         <section aria-label={t.orderItems} className="rounded-[18px] border border-line bg-white px-4 py-1">
           <AnimatePresence initial={false}>
             {cart.map((l) => (

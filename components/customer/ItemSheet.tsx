@@ -125,12 +125,15 @@ function SheetBody({ itemId, onClose, onAdd }: { itemId: string } & Omit<Props, 
       >
         <span className="h-1 w-10 rounded-full bg-line-strong" />
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-[18px] overflow-y-auto px-[18px] pb-2">
+      {/* Isi tidak boleh menyusut (`*:flex-none`): tanpa ini, di layar pendek bagian ber-overflow-hidden
+          seperti "Tingkat manis" dan "Es" diperas jadi beberapa piksel, alih-alih panelnya yang bisa digulir. */}
+      <div className="flex min-h-0 flex-1 flex-col gap-[18px] overflow-y-auto overscroll-contain px-[18px] pb-2 *:flex-none">
         {item.image && (
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1, transition: { duration: DURATION.slow, ease: EASE_OUT, delay: 0.05 } }}
-            className="relative h-[170px] flex-none overflow-hidden rounded-[18px] bg-paper"
+            // Foto mengecil di layar pendek (bilah terjemahan/browser memakan tinggi), supaya pilihan tetap terlihat.
+            className="relative h-[min(170px,22dvh)] flex-none overflow-hidden rounded-[18px] bg-paper"
           >
             <Image src={item.image} alt="" fill sizes="440px" className="object-cover" style={{ objectPosition: item.focus ?? "50% 50%" }} />
           </motion.div>

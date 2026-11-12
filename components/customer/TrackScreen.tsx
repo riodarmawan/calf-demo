@@ -63,7 +63,7 @@ export function TrackScreen({ order, ahead, prep, onOrderAgain }: Props) {
         </span>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4 *:flex-none">
         {/* Hanya perubahan status yang dibacakan, bukan seluruh kartu (nomor, nama, perkiraan) dari awal. */}
         <p className="sr-only" aria-live="polite">
           {ready ? `${step.title}. ${desc}` : step.title}

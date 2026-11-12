@@ -77,7 +77,7 @@ export function PayScreen({ total, deadline, onRenew, onBack, onPaid }: Props) {
         <h1 className="font-display flex-1 text-[26px] leading-none">{t.payTitle}</h1>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto p-4">
+      <div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-y-auto p-4 *:flex-none">
         <div className="text-center">
           <div className="text-[13px] text-muted">{t.amountDue}</div>
           <div className="font-display text-[44px] leading-tight">{rp(total)}</div>
